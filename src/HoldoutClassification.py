@@ -10,6 +10,7 @@ from sklearn.metrics import accuracy_score
 import logging
 from joblib import dump, load
 import json, os
+from polylearn import FactorizationMachineClassifier
 #from pprint import pprint
 
 logging.basicConfig(level=logging.INFO)
@@ -63,10 +64,10 @@ def HoldoutClassification(TrainMalSet, TrainGoodSet, TestMalSet, TestGoodSet, Fe
 
     T0 = time.time()
     if not Model:
-        Clf = GridSearchCV(LinearSVC(), Parameters, cv= 5, scoring= 'f1', n_jobs=-1 )
+        Clf = FactorizationMachineClassifier(n_components=10,max_iter=200)
         SVMModels= Clf.fit(x_train, y_train)
         Logger.info("Processing time to train and find best model with GridSearchCV is %s sec." %(round(time.time() -T0, 2)))
-        BestModel= SVMModels.best_estimator_
+        BestModel= SVMModels
         Logger.info("Best Model Selected : {}".format(BestModel))
         TrainingTime = round(time.time() - T0,2)
         print "The training time for random split classification is %s sec." % (TrainingTime)
@@ -75,7 +76,7 @@ def HoldoutClassification(TrainMalSet, TrainGoodSet, TestMalSet, TestGoodSet, Fe
         dump(Clf, filename+".pkl")
     else:
         SVMModels= load(Model)
-        BestModel= SVMModels.best_estimator_
+        BestModel= SVMModels
         TrainingTime = 0
 
     # step 4: Evaluate the best model on test set
@@ -92,7 +93,7 @@ def HoldoutClassification(TrainMalSet, TrainGoodSet, TestMalSet, TestGoodSet, Fe
                                                                                            target_names=['Malware',
                                                                                                          'Goodware'])
     # pointwise multiplication between weight and feature vect
-    w = BestModel.coef_
+    w = BestModel.w_
     w = w[0].tolist()
     v = x_test.toarray()
     vocab = FeatureVectorizer.get_feature_names()
