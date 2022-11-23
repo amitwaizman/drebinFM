@@ -205,7 +205,6 @@ def ProcessingDataForGetApkData(ApkDirectoryPath, ApkFile, PMap):
         DataDictionary["UsedPermissionsList"] = UsedPermissionsList
         DataDictionary["RestrictedApiList"] = RestrictedApiList
         DataDictionary["SuspiciousApiList"] = SuspiciousApiList
-        DataDictionary["URLDomainList"] = URLDomainList
         # Set S6, S5, S7, S8
 
 
