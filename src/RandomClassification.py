@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer as TF
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import LinearSVC
 from sklearn import metrics
+from polylearn import FactorizationMachineClassifier
 from sklearn.metrics import accuracy_score
 import logging
 import random
@@ -65,10 +66,10 @@ def RandomClassification(MalwareCorpus, GoodwareCorpus, TestSize, FeatureOption,
 
     T0 = time.time() 
     if not Model:
-        Clf = GridSearchCV(LinearSVC(), Parameters, cv= 5, scoring= 'f1', n_jobs=-1 )
+        Clf = FactorizationMachineClassifier(n_components=10,max_iter=200)
         SVMModels= Clf.fit(x_train, y_train)
         Logger.info("Processing time to train and find best model with GridSearchCV is %s sec." %(round(time.time() -T0, 2)))
-        BestModel= SVMModels.best_estimator_
+        BestModel= SVMModels
         Logger.info("Best Model Selected : {}".format(BestModel))
         print "The training time for random split classification is %s sec." % (round(time.time() - T0,2))
         print "Enter a filename to save the model:"
@@ -76,7 +77,7 @@ def RandomClassification(MalwareCorpus, GoodwareCorpus, TestSize, FeatureOption,
         dump(Clf, filename + ".pkl")
     else:
         SVMModels = load(Model)
-        BestModel= SVMModels.best_estimator
+        BestModel= SVMModels
 
     # step 4: Evaluate the best model on test set
     T0 = time.time()
@@ -93,7 +94,7 @@ def RandomClassification(MalwareCorpus, GoodwareCorpus, TestSize, FeatureOption,
                                                                                            target_names=['Malware',
                                                                                                          'Goodware'])
     # pointwise multiplication between weight and feature vect
-    w = BestModel.coef_
+    w = BestModel.w_
     w = w[0].tolist()
     v = x_test.toarray()
     vocab = FeatureVectorizer.get_feature_names()
