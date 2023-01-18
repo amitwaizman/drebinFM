@@ -1,5 +1,7 @@
 The re-implemenation of the FM model take from https://github.com/ArielCyber/Android-crystal-ball.git
 
+The execution of the attack can be seen in the attack folder
+
 What does this repository contain?
 
     This repo contains a python implementation of Arp, Daniel, et al. "DREBIN: Effective and Explainable Detection of Android Malware in Your Pocket." NDSS. 2014.
